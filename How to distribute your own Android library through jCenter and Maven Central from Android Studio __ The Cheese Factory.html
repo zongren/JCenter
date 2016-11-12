@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="">
+
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="description" content="In Android Studio, if you wish to include any library to your application. You could just simply add a following line of dependency in module&#39;s build.gradle file.
+dependencies {
+    compile &#39;com.int">
+	<meta name="author" content="nuuneoi">
+
+	<title>How to distribute your own Android library through jCenter and Maven Central from Android Studio :: The Cheese Factory</title>
+
+	<!-- Bootstrap Core CSS -->
+	<link href="./How to distribute your own Android library through jCenter and Maven Central from Android Studio __ The Cheese Factory_files/bootstrap.min.css"
+		rel="stylesheet">
+
+	<link href="./How to distribute your own Android library through jCenter and Maven Central from Android Studio __ The Cheese Factory_files/prism.css"
+		rel="stylesheet">
+
+	<!-- Custom CSS -->
+	<link href="./How to distribute your own Android library through jCenter and Maven Central from Android Studio __ The Cheese Factory_files/clean-blog.css"
+		rel="stylesheet">
+	<link href="./How to distribute your own Android library through jCenter and Maven Central from Android Studio __ The Cheese Factory_files/style.css"
+		rel="stylesheet">
+
+	<!-- Custom Fonts -->
+	<link href="./How to distribute your own Android library through jCenter and Maven Central from Android Studio __ The Cheese Factory_files/font-awesome.min.css"
+		rel="stylesheet" type="text/css">
+
+</head>
+
+<body>
+	<div style="max-width: 100%; width: 100%; overflow-x: hidden;">
+
+		<!-- Navigation -->
+		<nav class="navbar navbar-default navbar-custom navbar-fixed-top is-fixed">
+			<div class="container-fluid">
+				<!-- Brand and toggle get grouped for better mobile display -->
+				<div class="navbar-header page-scroll">
+					<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+					<a class="navbar-brand" href="https://inthecheesefactory.com/blog">The Cheese Factory :: Blog</a>
+				</div>
+
+				<!-- Collect the nav links, forms, and other content for toggling -->
+				<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+					<ul class="nav navbar-nav navbar-right">
+						<li>
+							<a href="https://inthecheesefactory.com/login/fb">Login with Facebook</a>
+						</li>
+					</ul>
+				</div>
+				<!-- /.navbar-collapse -->
+			</div>
+			<!-- /.container -->
+		</nav>
+
+		<!-- Post Content -->
+		<article>
+			<div class="container">
+				<div class="row">
+					<div class="col-lg-10 col-lg-offset-1 col-md-10 col-md-offset-1 blog-content">
+						<p>In Android Studio, if you wish to include any library to your application. You could just simply add a following line
+							of dependency in module's <code>build.gradle</code> file.</p>
+						<pre class=" language-groovy"><code class=" language-groovy">dependencies <span class="token punctuation">{</span>
+    compile <span class="token string">'com.inthecheesefactory.thecheeselibrary:fb-like:0.9.3'</span>
+<span class="token punctuation">}</span></code></pre>
+						<p>That's all.&nbsp;The library is now usable.</p>
+						<p>It is completely cool. But you might be curious where does Android Studio fetch&nbsp;the library from? This blog will
+							describe in details how this thing work including how to publish your own library and share it to&nbsp;developers
+							in the rest of the world which does&nbsp;not only make this world a better place but also make you look more cool
+							!
+						</p>
+						<h2 class="section-heading">Where does Android Studio fetch the library from?</h2>
+						<p>Start with this&nbsp;first simple question which I believe that not all of you completely knows that from where Android
+							Studio fetch the library. Does it just search google for us and download&nbsp;the proper library to our project?</p>
+						<p>Well. It is not that complicated. Android Studio downloads the library from <strong>Maven Repository Server</strong>							we defined in <code>build.gradle</code>. (Apache Maven is a tools developed by Apache provides a file server to distribute
+							the libraries). Basically there are just 2 standard servers used for host the libraries for Android such as <strong>jcenter</strong>							and <strong>Maven Central</strong></p>
+						<div class="row">
+							<div class="col-md-6">
+								<h2 class="section-heading subsection-heading">jcenter</h2>
+								<p>jcenter is a&nbsp;Maven Repository hosted by <a href="https://bintray.com/" target="_blank">bintray.com</a>. You
+									could find the whole repository <a href="http://jcenter.bintray.com/" target="_blank">here</a>.</p>
+								<p>To use jcenter in your project, you have to define the repository like below in project's&nbsp;<code>build.gradle</code>&nbsp;file.</p>
+								<pre class=" language-html"><code class=" language-html">allprojects {
+    repositories {
+        jcenter()
+    }
+}
+</code></pre>
+							</div>
+							<div class="col-md-6">
+								<h2 class="subsection-heading">Maven Central</h2>
+								<p>Maven Central is a&nbsp;Maven Repository hosted by <a href="https://sonatype.org/" target="_blank">sonatype.org</a>.
+									You could find the whole repository <a href="https://oss.sonatype.org/content/repositories/releases/" target="_blank">here</a>.</p>
+								<p>To use Maven Central&nbsp;in your project, you have to define the repository like below in project's&nbsp;<code>build.gradle</code>&nbsp;file.</p>
+								<pre class=" language-html"><code class=" language-html">allprojects {
+    repositories {
+        mavenCentral()
+    }
+}
+</code></pre>
+							</div>
+						</div>
+						<p><span style="color: #e74c3c;">Please note that although both jcenter and&nbsp;Maven Central are standard android library repositories but they are hosted at completely different place, provided by different provider and there is nothing related to each other.</span>&nbsp;What
+							that&nbsp;is available in jcenter might not be found in Maven Central and vice versa.</p>
+						<p>Apart from those two standard servers, we are also able to define the&nbsp;specific Maven Repository Server ourselves
+							in case we use a library from some developers who want to host their libraries on their own server. Twitter's Fabric.io
+							falls in&nbsp;this case by hosting their own Maven Repository at&nbsp;<a href="https://maven.fabric.io/public">https://maven.fabric.io/public</a>.
+							If you want to use any Fabric.io's library, you have to define the repository's url yourselve like below.</p>
+						<pre class=" language-html"><code class=" language-html">repositories {
+    maven { url 'https://maven.fabric.io/public' }
+}
+</code></pre>
+						<p>And then you will be able to access any library inside with the same method.</p>
+						<pre class=" language-groovy"><code class=" language-groovy">dependencies <span class="token punctuation">{</span>
+    compile <span class="token string">'com.crashlytics.sdk.android:crashlytics:2.2.4@aar'</span>
+<span class="token punctuation">}</span></code></pre>
+						<p>But which one is the better: to upload library to standard server or to host our own server? The former is.&nbsp;
+							<span style="color: #2980b9;"><strong>To make our own library be available to public. Another developer should not has to define anything but a line of code defining dependency's name. So in this article, we will focus&nbsp;on just&nbsp;jcenter and Maven Central which provide far better experience for developer.</strong></span>
+						</p>
+						<p>FYI&nbsp;actually there is another type of&nbsp;repository besides Maven Repository that works with gradle on Android
+							Studio. It is called <a href="http://ant.apache.org/ivy/" target="_blank">Ivy Repository</a>&nbsp;but from my own
+							experience, I have never seen anyone using it before including me so I will just simply ignore this type of repository&nbsp;in
+							this article.</p>
+						<h2 class="section-heading">Understand jcenter and&nbsp;Maven Central</h2>
+						<p>Wonder why is there not only just one but two standard repositories out there?</p>
+						<p>Actually both of them are the repositories having&nbsp;the same duty: hosting Java/Android libraries. It is a developers'
+							choice to upload their libraries to which one or may be both.</p>
+						<p>At first, Android Studio chose Maven Central as a default repository. Once you create a new project from old version
+							of Android Studio, <code>mavenCentral()</code> would be automatically defined in build.gradle.</p>
+						<p>But the big problem of Maven Central is it is not developer-friendly. It is surprisingly hard to upload the library
+							to. To be able to do so, developer has to be at some level of geeky. And with some more reason for example a security
+							concern and etc, <strong>Android Studio team decided to switch the default repository to jcenter instead</strong>							as you can see that once you create a new project from latest version of Android Studio, <code>jcenter()</code> would
+							be automatically defined instead of <code>mavenCentral()</code>.</p>
+						<p>There are load of good reasons why they decided to switch from Maven Central to jcenter. Here are some of the major
+							one.
+						</p>
+						<p style="padding-left: 30px;">- jcenter delivers library through CDN which means that&nbsp;developer could enjoy the faster loading experience.</p>
+						<p style="padding-left: 30px;">- jcenter is the largest Java Repository on earth. So whatever that is available on Maven Central could be implied
+							that it would be available on jcenter as well. In the other words, jcenter is superset of Maven Central.</p>
+						<p style="padding-left: 30px;">- It is incredibly easy to upload our own library to the repository.&nbsp;No need to sign or do any complex thing like
+							we have to on Maven Central.</p>
+						<p style="padding-left: 30px;">- Friendly-UI</p>
+						<p style="padding-left: 30px;">- If you want to upload your library to Maven Central you could do it easily with a single click on bintray site (and
+							with some step of one-time setup).</p>
+						<p>With above reasons and from my own experiences, I must say that it is the brilliant decision switching default repository
+							to jcenter.</p>
+						<p>So this article will focus on just jcenter since once you successfully upload your library to jcenter, it could be
+							forwarded&nbsp;to Maven Central easily after that.</p>
+						<h2 class="section-heading">How does gradle pull a library from&nbsp;Repository?</h2>
+						<p>Before we start talking about how to upload a library to jcenter. We should start with how gradle fetch a library from
+							repository.&nbsp;For example,&nbsp;when we type like below in build.gradle, how are&nbsp;those library files magically
+							downloaded to your project.</p>
+						<pre class=" language-groovy"><code class=" language-groovy">compile <span class="token string">'com.inthecheesefactory.thecheeselibrary:fb-like:0.9.3'</span></code></pre>
+						<p>Basically we have to know the form of library string first. It consists of 3 parts:</p>
+						<pre class=" language-html"><code class=" language-html">GROUP_ID:ARTIFACT_ID:VERSION</code></pre>
+						<p>In the above case, <span style="color: #8e44ad;"><strong>GROUP_ID</strong></span>&nbsp;is&nbsp;<strong>com.inthecheesefactory.thecheeselibrary</strong>&nbsp;while&nbsp;
+							<span style="color: #16a085;"><strong>ARTIFACT_ID</strong></span>&nbsp;is&nbsp;<strong>fb-like</strong>&nbsp;and&nbsp;
+							<span
+								style="color: #2980b9;"><strong>VERSION</strong></span>&nbsp;is&nbsp;<strong>0.9.3</strong></p>
+						<p>For the meaning, <strong>GROUP_ID</strong>&nbsp;defines the name of&nbsp;library's group. It is possible that there
+							would be more than one library that work the different job in the same context. If library are in the same group,
+							it would share the same GROUP_ID. Generally we name it with developer's package name and then follow with the name
+							of library's group, for example, <code>com.squareup.picasso</code>. And then defines the real name of the library
+							in&nbsp;
+							<strong>ARTIFACT_ID</strong>. For <strong>VERSION</strong>, there is nothing but a version number. Although it could
+							be any text but I suggest to set it in <span style="font-family: &#39;courier new&#39;, courier, monospace;">x.y.z</span>							format and might follow with <span style="font-family: &#39;courier new&#39;, courier, monospace;">-beta</span> if
+							you want.</p>
+						<p>Here is the real example of library from Square. You will notice that each one could be easily&nbsp;recognised the
+							library's and developer's name.</p>
+						<pre class=" language-groovy"><code class=" language-groovy">dependencies <span class="token punctuation">{</span>
+  compile <span class="token string">'com.squareup:otto:1.3.7'</span>
+  compile <span class="token string">'com.squareup.picasso:picasso:2.5.2'</span>
+  compile <span class="token string">'com.squareup.okhttp:okhttp:2.4.0'</span>
+  compile <span class="token string">'com.squareup.retrofit:retrofit:1.9.0'</span>
+<span class="token punctuation">}</span></code></pre>
+						<p>What will happen when we add dependencies like above? Easy. Gradle will&nbsp;ask Maven Repository Server that does
+							the library exist if yes gradle will get a path of the requested library which mostly in the form of GROUP_ID/ARTIFACT_ID/VERSION_ID,
+							for example, you could find library files of <code>com.squareup:otto:1.3.7</code> from&nbsp;<a href="http://jcenter.bintray.com/com/squareup/otto/1.3.7">http://jcenter.bintray.com/com/squareup/otto/1.3.7</a>&nbsp;and&nbsp;
+							<a href="https://oss.sonatype.org/content/repositories/releases/com/squareup/otto/1.3.7/">https://oss.sonatype.org/content/repositories/releases/com/squareup/otto/1.3.7/</a>.</p>
+						<p>And then Android Studio would download those files to our machine and compile with our project per your request. That's
+							all. Nothing complicated !</p>
+						<p>I believe that you should know understand clearly that library pulled from repository is nothing special but <code>jar</code>							or <code>aar</code> files hosted on repository server. It could be compared just like to download those files yourselve,
+							copy and compile everything&nbsp;along with your project. But the big benefits you get from dependency system available
+							on gradle is you don't have to do anything but just type&nbsp;some texts and that's all. The library would suddenly
+							be useable&nbsp;in&nbsp;your project also with versioning system.</p>
+						<h2 class="section-heading">Knowing an aar file format</h2>
+						<p>Wait ... I said that there are two types of library files that could be hosted on the repository, <strong>jar</strong>							and <strong>aar</strong>. jar file is nothing, I believe that all of you know about it. But what is aar file exactly?</p>
+						<p>aar file is developed on top of jar file. It was invented because something Android Library needs to be embedded with
+							some Android-specific files like AndroidManifest.xml, Resources, Assets or JNI which are out of jar file's standard.
+							So aar was invented to cover all of those things. Basically it is a normal zip file just like jar one&nbsp;but with
+							different file structure. jar file is embedded inside aar file with <code>classes.jar</code> name. And&nbsp;the rest
+							are listed below:</p>
+						<p style="padding-left: 60px;"><span style="font-family: &#39;courier new&#39;, courier, monospace; font-size: 12pt;">- /AndroidManifest.xml (mandatory)<br></span>
+							<span style="font-family: &#39;courier new&#39;, courier, monospace; font-size: 12pt;">- /classes.jar (mandatory)<br></span>
+							<span
+								style="font-family: &#39;courier new&#39;, courier, monospace; font-size: 12pt;">- /res/ (mandatory)<br></span>
+								<span style="font-family: &#39;courier new&#39;, courier, monospace; font-size: 12pt;">- /R.txt (mandatory)<br></span>
+								<span
+									style="font-family: &#39;courier new&#39;, courier, monospace; font-size: 12pt;">- /assets/ (optional)<br></span>
+									<span style="font-family: &#39;courier new&#39;, courier, monospace; font-size: 12pt;">- /libs/*.jar (optional)<br></span>
+									<span
+										style="font-family: &#39;courier new&#39;, courier, monospace; font-size: 12pt;">- /jni/&lt;abi&gt;/*.so (optional)<br></span>
+										<span style="font-family: &#39;courier new&#39;, courier, monospace; font-size: 12pt;">- /proguard.txt (optional)<br></span>
+										<span
+											style="font-family: &#39;courier new&#39;, courier, monospace; font-size: 12pt;">- /lint.jar (optional)</span>
+						</p>
+						<p>As you can see. aar file is designed for Android especially. So this article will teach you how to create and upload
+							a library in aar format.</p>
+						<h2 class="section-heading">How to upload your library to jcenter</h2>
+						<p>Right now I believe that you already&nbsp;have&nbsp;all of the basic knowledge on how the&nbsp;repository system works.
+							Now let's begin the most important part: uploading processes. The objective is as simple as <em>how to upload our library files to <a href="http://jcenter.bintray.com/">http://jcenter.bintray.com</a></em>.
+							Once we could do it, the library is published. Well ... two things to concern: how to create an aar file and how to
+							upload built files to the repository?</p>
+						<p>Although it requires a bunch of&nbsp;steps but I must say that it is totally not hard thing to do since bintray has
+							prepared for everything quite well.&nbsp;You could find the whole process in the below diagram.</p>
+						<p><img class="drop-shadow" src="./How to distribute your own Android library through jCenter and Maven Central from Android Studio __ The Cheese Factory_files/steps_1.png"
+								alt="steps_1"></p>
+						<p>And since there are quite a lot of details so let me split the process to 7 parts so I could describe everything clearly
+							in step-by-step.</p>
+						<h2 class="subsection-heading">Part 1 :&nbsp;Create a package on Bintray</h2>
+						<p>First of all. You need to create a package on bintray. To do so, you need a bintray account and create a package on
+							website.
+						</p>
+						<p><strong>Step 1:</strong>&nbsp;Register for an account on&nbsp;<a href="https://bintray.com/" target="_blank">bintray.com</a>.&nbsp;(The
+							sign up process is quite simple so please do it yourself)</p>
+						<p><strong>Step 2:</strong>&nbsp;Once registration is done, login to the website and click at&nbsp;<strong>maven</strong></p>
+						<p><img class="drop-shadow" style="display: block; margin-left: auto; margin-right: auto;" src="./How to distribute your own Android library through jCenter and Maven Central from Android Studio __ The Cheese Factory_files/maven.png"
+								alt="maven"></p>
+						<p><strong>Step 3:</strong>&nbsp;Click at <strong>Add New Package</strong>&nbsp;to start creating a new package for our
+							library.
+						</p>
+						<p><img class="drop-shadow" src="./How to distribute your own Android library through jCenter and Maven Central from Android Studio __ The Cheese Factory_files/maven2.png"
+								alt="maven2"></p>
+						<p><strong>Step 4:</strong>&nbsp;Enter all of those required information</p>
+						<p><img class="drop-shadow" src="./How to distribute your own Android library through jCenter and Maven Central from Android Studio __ The Cheese Factory_files/maven3.png"
+								alt="maven3"></p>
+						<p>Although there is no rule on how to name the <strong>Package&nbsp;Name</strong>&nbsp;but there is some name convention.
+							Just set&nbsp;all of the characters to lowercase and separate each word with hyphen (-), for example, <strong>fb-like</strong>.</p>
+						<p>Once every required fields are done, click at&nbsp;<strong>Create Package</strong>&nbsp;to finish.</p>
+						<p><strong>Step 5:</strong>&nbsp;Website will redirect you to&nbsp;Edit Package page. Click at package's name under Edit
+							Package text to enter package's details page.</p>
+						<p><img class="drop-shadow" style="display: block; margin-left: auto; margin-right: auto;" src="./How to distribute your own Android library through jCenter and Maven Central from Android Studio __ The Cheese Factory_files/maven4.png"
+								alt="maven4"></p>
+						<p>Done! You now have <span style="text-decoration: underline;">your own Maven Repository on Bintray</span>&nbsp;which
+							is ready to be uploaded the library to.</p>
+						<p><img class="drop-shadow" src="./How to distribute your own Android library through jCenter and Maven Central from Android Studio __ The Cheese Factory_files/maven5.png"
+								alt="maven5"></p>
+						<p>Bintray account registration is now done. Next one to work with is Sonatype, the Maven Central provider.</p>
+						<h2 class="subsection-heading">Part 2 : Create a&nbsp;Sonatype account for&nbsp;Maven Central</h2>
+						<p><em>Note: You could skip Part 2 and 3 if you don't have a plan to upload your library to Maven Central. Anyway I suggest you not to skip since there are a lot of developers out there who still use this repository.</em></p>
+						<p>Just like jcenter, if you want to distribute your library through Maven Central, you need to register an account at
+							its provider site, <strong>Sonatype</strong>.</p>
+						<p>What you need to know is the account that you have to create one&nbsp;is the&nbsp;JIRA Issue Tracker account on Sonatype
+							site. To do so, please go to&nbsp;<a href="https://issues.sonatype.org/secure/Dashboard.jspa">Sonatype Dashboard</a>&nbsp;and
+							simply sign up for an account.</p>
+						<p>Once you're done. You have to&nbsp;request a permission to distribute your library to Maven Central. Anyway the process&nbsp;doesn't
+							make any sense at all (at least for me) since what you have to do is to <strong>create an issue in JIRA</strong> to
+							let them allow you&nbsp;to upload your library that match the GROUP_ID provided to Maven Central.</p>
+						<p>To create an issue like described, go to&nbsp;<a href="https://issues.sonatype.org/secure/Dashboard.jspa" target="_blank">Sonatype Dashboard</a>&nbsp;and
+							login with account created. And then click at&nbsp;<strong>Create</strong>&nbsp;placed at the top&nbsp;menu.</p>
+						<p>Fill in the following information:</p>
+						<p style="padding-left: 30px;"><span style="color: #34495e;"><strong>Project:</strong> Community Support - Open Source Project Repository Hosting</span></p>
+						<p style="padding-left: 30px;"><span style="color: #34495e;"><strong>Issue Type:</strong> New Project</span></p>
+						<p style="padding-left: 30px;"><span style="color: #34495e;"><strong>Summary:</strong>&nbsp;Your library's name in summary,&nbsp;for example, The Cheese Library</span></p>
+						<p style="padding-left: 30px;"><span style="color: #34495e;"><strong>Group Id:</strong>&nbsp;Put the root&nbsp;GROUP_ID, for example,&nbsp;com.inthecheeselibrary . After you got an approval, <em>every single library starts&nbsp;with com.inthecheeselibrary</em> will be&nbsp;allowed to upload to repository, for example, com.inthecheeselibrary.somelib</span></p>
+						<p style="padding-left: 30px;"><span style="color: #34495e;"><strong>Project URL:</strong>&nbsp;Put a URL of any library you plan to distribute, for example, https://github.com/nuuneoi/FBLikeAndroid</span></p>
+						<p style="padding-left: 30px;"><span style="color: #34495e;"><strong>SCM URL:</strong> URL of&nbsp;Source Control, for example,&nbsp;https://github.com/nuuneoi/FBLikeAndroid.git</span></p>
+						<p>Keep the rest unmodified&nbsp;and click at <strong>Create</strong>. That's all. Now it is the hardest part ...&nbsp;wait
+							patiently ... which will take around 1 week or a little bit more by average. And&nbsp;you will be granted an access
+							to distribute your library to Maven Central after that.</p>
+						<p>The last thing to do is to give bintray your&nbsp;Sonatype OSS username in Accounts tab of&nbsp;<a href="https://bintray.com/profile/edit"
+								target="_blank">Bintray Profile</a>.</p>
+						<p><img class="drop-shadow" src="./How to distribute your own Android library through jCenter and Maven Central from Android Studio __ The Cheese Factory_files/sonatypeusername.png"
+								alt="sonatypeusername"></p>
+						<p>Click at <strong>Update</strong>&nbsp;and we're done.</p>
+						<h2 class="section-heading subsection-heading">Part 3 : Enable&nbsp;Auto Signing in&nbsp;Bintray</h2>
+						<p>As mentioned above, we could upload a library to Maven Central through jcenter but to do that we need to sign that
+							library first. bintray provides a mechanic to do that easily through web interface that allows library to be signed
+							automatically once uploaded.</p>
+						<p>First step is to generate a key via command line with the command below. (In case you use Windows, please do it under&nbsp;
+							<a href="https://www.cygwin.com/" target="_blank">cygwin</a>)</p>
+						<pre class=" language-bash"><code class=" language-bash">gpg --gen-key</code></pre>
+						<p>There are some mandatory fields to be filled in. Default value could be applied in most of the parts&nbsp;but for some
+							field you need to enter the proper value&nbsp;by yourself, for example, your real name, passpharse and etc.</p>
+						<p>Once key is created. Call the following command to see the created key's information.</p>
+						<pre class=" language-bash"><code class=" language-bash">gpg --list-keys</code></pre>
+						<p>If there is nothing wrong, the information will be shown as below</p>
+						<pre class=" language-bash"><code class=" language-bash">pub   2048R/01ABCDEF 2015-03-07
+uid                  Sittiphol Phanvilai <span class="token operator">&lt;</span>yourmail@email.com<span class="token operator">&gt;</span>
+sub   2048R/98765432 2015-03-07</code></pre>
+						<p>Now we have to upload the public key to keyservers to make it&nbsp;useful. To do so, please call the following command
+							and replace PUBLIC_KEY_ID with 8-digits&nbsp;hexadecimal value after 2048R/ in the <strong>pub</strong> line which
+							is <code>01ABCDEF</code>&nbsp;in this example.</p>
+						<pre class=" language-bash"><code class=" language-bash">gpg --keyserver hkp://pool.sks-keyservers.net --send-keys PUBLIC_KEY_ID</code></pre>
+						<p>And then, export both public and private key as ASCII armor format with the following command and please replace
+							<a href="mailto:yourmail@email.com">yourmail@email.com</a>&nbsp;to the email you used to create your own key in the
+							previous step.</p>
+						<pre class=" language-html"><code class=" language-html">gpg -a --export yourmail@email.com &gt; public_key_sender.asc
+gpg -a --export-secret-key yourmail@email.com &gt; private_key_sender.asc</code></pre>
+						<p>Open Bintray's&nbsp;<a href="https://bintray.com/profile/edit" target="_blank">Edit Profile</a>&nbsp;page and click
+							at <strong>GPG Signing</strong>. Fill in both Public Key and Private Key using content in <span style="font-family: &#39;courier new&#39;, courier, monospace;">public_key_sender.asc</span>							and <span style="font-family: &#39;courier new&#39;, courier, monospace;">private_key_sender.asc</span> files exported
+							in previous step respectively.</p>
+						<p><img class="drop-shadow" src="./How to distribute your own Android library through jCenter and Maven Central from Android Studio __ The Cheese Factory_files/gpg.png"
+								alt="gpg"></p>
+						<p>Click at <strong>Update</strong> to save the keys</p>
+						<p>The final step is to enable auto signing. Go to main page of <a href="https://bintray.com/" target="_blank">Bintray</a>&nbsp;and
+							then click at <strong>maven</strong>.</p>
+						<p><img class="drop-shadow" style="display: block; margin-left: auto; margin-right: auto;" src="./How to distribute your own Android library through jCenter and Maven Central from Android Studio __ The Cheese Factory_files/maven.png"
+								alt="maven"></p>
+						<p>Click&nbsp;<strong>Edit</strong></p>
+						<p><img class="drop-shadow" style="display: block; margin-left: auto; margin-right: auto;" src="./How to distribute your own Android library through jCenter and Maven Central from Android Studio __ The Cheese Factory_files/editmaven.png"
+								alt="editmaven"></p>
+						<p><strong>Check</strong> the <strong>GPG Sign uploaed files automatically</strong>&nbsp;box to enable auto signing.</p>
+						<p><img class="drop-shadow" style="display: block; margin-left: auto; margin-right: auto;" src="./How to distribute your own Android library through jCenter and Maven Central from Android Studio __ The Cheese Factory_files/autosigned.png"
+								alt="autosigned"></p>
+						<p>Click <strong>Update</strong>&nbsp;to save the progress. That's all. From now on, every single library uploaded to
+							our Maven Repository will be automatically signed and is ready to be forwarded to Maven Central in a single click.</p>
+						<p>Please note that this is a one-time action and would be also applied to every single library created after this.</p>
+						<p>Bintray and Maven Central are now prepared. Now let's switch to Android Studio part.</p>
+						<h2 class="subsection-heading">Part 4&nbsp;: Prepare an&nbsp;Android Studio project</h2>
+						<p>In many cases, we might need more than 1 library to be uploaded to repository in the single project and at the same
+							time, we might not need to upload something as well. So the best structure I would recommend is to split each part
+							as <strong>Module</strong>. Basically I suggest you to split to at least 2 modules, one&nbsp;<em>Application Module</em>							for library usage example and another one is a <em>Library Module</em> contains the source code of&nbsp;library that
+							you wish to upload to repository. Please note that if you want to have more than 1 library in your project, please
+							feel free to create another module:&nbsp;<span style="text-decoration: underline;"><strong>1 module per 1 library</strong></span>.</p>
+						<p><img src="./How to distribute your own Android library through jCenter and Maven Central from Android Studio __ The Cheese Factory_files/projectstructure.png"
+								alt="projectstructure"></p>
+						<p>I believe that all of you know how to create a library module so I will not talk to deep in this part. It is just as
+							simply as creating an <strong>Android Library</strong> module and it's&nbsp;done.</p>
+						<p><img class="drop-shadow" src="./How to distribute your own Android library through jCenter and Maven Central from Android Studio __ The Cheese Factory_files/newmodule.png"
+								alt="newmodule"></p>
+						<p>Next is to apply bintray's plugin to your project. To do that, we need to modify <span style="text-decoration: underline;">project's</span>							<code>build.gradle</code>&nbsp;file in dependencies part like this.</p>
+						<pre class=" language-groovy"><code class=" language-groovy">    dependencies <span class="token punctuation">{</span>
+        classpath <span class="token string">'com.android.tools.build:gradle:1.2.3'</span>
+        classpath <span class="token string">'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.4'</span>
+        classpath <span class="token string">'com.github.dcendents:android-maven-gradle-plugin:1.3'</span>
+    <span class="token punctuation">}</span></code></pre>
+						<p><span style="color: #c0392b;">It is important to set gradle build tools' version to 1.1.2 or upper since there is a critical bug in the prior versions. In this example, we will use the latest version, 1.2.3.</span></p>
+						<p>Next we will define the username and api key used for bintray authentication and also the password of created key by
+							modifying <code>local.properties</code>. The reason that we need to put those things&nbsp;in this file is those information
+							are sensitive and should not be shared to anywhere including version control. Fortunate that local.properties file
+							is already added to .gitignore since project was created. So these sensitive data would not be uploaded to git server
+							unintentionally.
+						</p>
+						<p>Here is the three lines to add:</p>
+						<pre class=" language-html"><code class=" language-html">bintray.user=YOUR_BINTRAY_USERNAME
+bintray.apikey=YOUR_BINTRAY_API_KEY
+bintray.gpg.password=YOUR_GPG_PASSWORD
+</code></pre>
+						<p>Put your bintray username in the first line and put the API Key which you could find yours at <strong>API Key</strong>							tab in&nbsp;<a href="https://bintray.com/profile/edit" target="_blank">Edit Profile</a>&nbsp;page in the second line.</p>
+						<p>The last line is the passphrase you used to create GPG key in previous step. Save and close the file.</p>
+						<p>The last file to be modified is module's&nbsp;<code>build.gradle</code>&nbsp;file. Open it and put these lines right
+							after&nbsp;
+							<code>apply plugin: 'com.android.library'</code>&nbsp;like this.</p>
+						<pre class=" language-groovy"><code class=" language-groovy">apply plugin<span class="token punctuation">:</span> <span class="token string">'com.android.library'</span>
+
+ext <span class="token punctuation">{</span>
+    bintrayRepo <span class="token operator">=</span> <span class="token string">'maven'</span>
+    bintrayName <span class="token operator">=</span> <span class="token string">'fb-like'</span>
+
+    publishedGroupId <span class="token operator">=</span> <span class="token string">'com.inthecheesefactory.thecheeselibrary'</span>
+    libraryName <span class="token operator">=</span> <span class="token string">'FBLike'</span>
+    artifact <span class="token operator">=</span> <span class="token string">'fb-like'</span>
+
+    libraryDescription <span class="token operator">=</span> <span class="token string">'A wrapper for Facebook Native Like Button (LikeView) on Android'</span>
+
+    siteUrl <span class="token operator">=</span> <span class="token string">'https://github.com/nuuneoi/FBLikeAndroid'</span>
+    gitUrl <span class="token operator">=</span> <span class="token string">'https://github.com/nuuneoi/FBLikeAndroid.git'</span>
+
+    libraryVersion <span class="token operator">=</span> <span class="token string">'0.9.3'</span>
+
+    developerId <span class="token operator">=</span> <span class="token string">'nuuneoi'</span>
+    developerName <span class="token operator">=</span> <span class="token string">'Sittiphol Phanvilai'</span>
+    developerEmail <span class="token operator">=</span> <span class="token string">'sittiphol@gmail.com'</span>
+
+    licenseName <span class="token operator">=</span> <span class="token string">'The Apache Software License, Version 2.0'</span>
+    licenseUrl <span class="token operator">=</span> <span class="token string">'http://www.apache.org/licenses/LICENSE-2.0.txt'</span>
+    allLicenses <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token string gstring">"Apache-2.0"</span><span class="token punctuation">]</span>
+<span class="token punctuation">}</span></code></pre>
+						<p>Leave bintrayRepo as it currently is, maven. Change&nbsp;bintrayName to your package name created above.&nbsp;And also
+							change the rest to match your library's information. From the above script, everyone would be able to use this&nbsp;library
+							with a following line of gradle script.</p>
+						<pre class=" language-groovy"><code class=" language-groovy">compile <span class="token string">'com.inthecheesefactory.thecheeselibrary:fb-like:0.9.3'</span></code></pre>
+						<p>Final step is to apply two scripts, used for building library files and uploading the built files to bintray, by appending
+							the same <code>build.gradle</code> file&nbsp;with the following script <strong>at the end of the file</strong>. (I
+							use the direct link to file hosted on github for convenience)</p>
+						<pre class=" language-groovy"><code class=" language-groovy"><span class="token comment" spellcheck="true">// Place it at the end of the file</span>
+apply from<span class="token punctuation">:</span> <span class="token string">'https://raw.githubusercontent.com/nuuneoi/JCenter/master/installv1.gradle'</span>
+apply from<span class="token punctuation">:</span> <span class="token string">'https://raw.githubusercontent.com/nuuneoi/JCenter/master/bintrayv1.gradle'</span>
+</code></pre>
+						<p>Done! Your project is now set and is ready to be uploaded to bintray. Yah !</p>
+						<h2 class="section-heading">Part 5 : Upload library to&nbsp;your bintray space</h2>
+						<p>Now it's time to upload your library to <span style="text-decoration: underline;">your own repository on bintray</span>.&nbsp;To
+							do that, please go to <strong>Terminal</strong> tab on Android Studio.</p>
+						<p style="text-align: center;"><img class="drop-shadow" src="./How to distribute your own Android library through jCenter and Maven Central from Android Studio __ The Cheese Factory_files/terminal.png"
+								alt="terminal"></p>
+						<p>First step is to check the correctness of code and build the library files (aar, pom, etc.). Type the below command
+							to do so.</p>
+						<pre class=" language-html"><code class=" language-html">&gt; gradlew install</code></pre>
+						<p>If these is nothing wrong, it would show something like:</p>
+						<pre class=" language-html"><code class=" language-html">BUILD SUCCESSFUL</code></pre>
+						<p>We are now halfway there. Next step is to upload the built files to bintray with following command.</p>
+						<pre class=" language-bash"><code class=" language-bash"><span class="token operator">&gt;</span> gradlew bintrayUpload
+</code></pre>
+						<p>Say eureka loudly if it shows like below&nbsp;!</p>
+						<pre class=" language-html"><code class=" language-html">SUCCESSFUL</code></pre>
+						<p>Check your package in the bintray web interface. You will see&nbsp;a change in Versions area.</p>
+						<p><img class="drop-shadow" src="./How to distribute your own Android library through jCenter and Maven Central from Android Studio __ The Cheese Factory_files/firstuploaded.png"
+								alt="firstuploaded"></p>
+						<p>Click into it and look into <strong>Files</strong> tab and you will see the of uploaded library files placed right
+							there.
+						</p>
+						<p><img class="drop-shadow" src="./How to distribute your own Android library through jCenter and Maven Central from Android Studio __ The Cheese Factory_files/uploadedfiles.png"
+								alt="uploadedfiles"></p>
+						<p>Congratulations, your library is now online and is ready for anyone to use it !</p>
+						<p>However don't too happy ... just yet. The library is still on your own Maven Repository not on jcenter yet. <span style="text-decoration: underline; color: #c0392b;">If anyone want to use your library, they have to define the repository's url first like below.</span></p>
+						<pre class=" language-groovy"><code class=" language-groovy">repositories <span class="token punctuation">{</span>
+    maven <span class="token punctuation">{</span>
+        url <span class="token string">'https://dl.bintray.com/nuuneoi/maven/'</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+
+<span class="token punctuation">...</span>
+
+dependencies <span class="token punctuation">{</span>
+    compile <span class="token string">'com.inthecheesefactory.thecheeselibrary:fb-like:0.9.3'</span>
+<span class="token punctuation">}</span></code></pre>
+						<p>You could find the url of your own Maven Repository from bintray web interface or just simply replace nuuneoi with
+							your bintray username. I encourage you to try browsing into that link as well and you will see what exactly is going
+							on.
+						</p>
+						<p>As mentioned above, it is not the best practices for shared library to let developer defines the complex things like
+							this. Imagine, we have to add 10 urls to use 10 libraries? ... Nightmare&nbsp;... So let's pass our library from our
+							own repository to jcenter for the better life quality !</p>
+						<h2 class="section-heading">Part 6 : Sync bintray user repository to jcenter</h2>
+						<p>It is pretty easy to sync your library to jcenter. Just go to the web interface and simply click at&nbsp;<strong>Add to JCenter</strong></p>
+						<p><img class="drop-shadow" src="./How to distribute your own Android library through jCenter and Maven Central from Android Studio __ The Cheese Factory_files/addtojcenter.png"
+								alt="addtojcenter"></p>
+						<p>Nothing to do but click <strong>Send</strong></p>
+						<p><img class="drop-shadow" style="display: block; margin-left: auto; margin-right: auto;" src="./How to distribute your own Android library through jCenter and Maven Central from Android Studio __ The Cheese Factory_files/addtojcenter2.png"
+								alt="addtojcenter2"></p>
+						<p>Nothing we can do now but wait for 2-3 hours to let bintray team approves our request. Once sync request&nbsp;is approved,
+							you will receive an email informing you the change. Now let's check the web interface, you will see some change in
+							<strong>Linked To</strong>&nbsp;section.</p>
+						<p style="text-align: center;"><img class="drop-shadow" src="./How to distribute your own Android library through jCenter and Maven Central from Android Studio __ The Cheese Factory_files/linkedto.png"
+								alt="linkedto"></p>
+						<p>From now on, any developer that use&nbsp;<code>jcenter()</code>&nbsp;repository will be able to use our library with
+							a single line of gradle script.</p>
+						<pre class=" language-groovy"><code class=" language-groovy">    compile <span class="token string">'com.inthecheesefactory.thecheeselibrary:fb-like:0.9.3'</span></code></pre>
+						<p>Want to check the existence of your library binary in jcenter? You could do that by go to&nbsp;<a href="http://jcenter.bintray.com/">http://jcenter.bintray.com </a>and
+							browse into the directory matched your library's group id and artifact id. In this example, it would be&nbsp;<code>com&nbsp;-&gt;&nbsp;inthecheesefactory -&gt; thecheeselibrary -&gt; fb-like -&gt; 0.9.3</code></p>
+						<p style="text-align: center;"><img class="drop-shadow" src="./How to distribute your own Android library through jCenter and Maven Central from Android Studio __ The Cheese Factory_files/fblikejcenter.png"
+								alt="fblikejcenter"></p>
+						<p>Please note that linking to jcenter is a one-time action. From now on, if you do&nbsp;any modification in&nbsp;your
+							package, for example, upload new version binary, delete old version binary, etc. The change would affect to jcenter
+							as well. Anyway since your own repository and jcenter are at the different place so you may need to wait for around
+							2-3 minutes to let jcenter sync the&nbsp;change.</p>
+						<p>And please be careful. If you decide to remove the whole package, library files placed on jcenter repository would
+							not be deleted in this case. And they&nbsp;will be left just like zombie files which nobody could delete&nbsp;it anymore.
+							So I suggest you that if you want to delete the whole package, please delete every single version from web interface
+							first before removing the package.</p>
+						<h2 class="section-heading">Part 7&nbsp;: Forward library to&nbsp;Maven Central</h2>
+						<p>Not all of android developers use jcenter. There are still a number of developers who still use <code>mavenCentral()</code>							so let's upload our library to Maven Central as well.</p>
+						<p>To forward library from jcenter to Maven Central, there are two missions that you need to achieve&nbsp;first:</p>
+						<p style="padding-left: 30px;">1) Bintray package must be already linked to jcenter</p>
+						<p style="padding-left: 30px;">2) Repository on Maven Central has already been approved to open</p>
+						<p>If you have already passed those qualifications. The way to forward your library package to Maven Central is incredibly
+							easy. Just simply click at <strong>Maven Central</strong>&nbsp;link on package's details page.</p>
+						<p style="text-align: center;"><img class="drop-shadow" src="./How to distribute your own Android library through jCenter and Maven Central from Android Studio __ The Cheese Factory_files/syncmavencentral.png"
+								alt="syncmavencentral"></p>
+						<p>Enter your Sonatype username/password and click <strong>Sync</strong>.</p>
+						<p><img class="drop-shadow" src="./How to distribute your own Android library through jCenter and Maven Central from Android Studio __ The Cheese Factory_files/syncmavencentral2.png"
+								alt="syncmavencentral2"></p>
+						<p><strong>Successfully synced and closed repo</strong> would be shown in <strong>Last Sync Status</strong> once it's
+							done successfully. But if there is any problem, it would be shown in Last Sync Errors. You have to fix the problem
+							case by case since the condition of library that could be uploaded to Maven Central is quite strict, for example,
+							+ sign couldn't be used in the version of library's dependency definition.</p>
+						<p>Once done. You could find&nbsp;your library binaries in&nbsp;<a href="https://oss.sonatype.org/content/repositories/releases/"
+								target="_blank">Maven Central Repository</a>&nbsp;at the directory matched your library's group/artifact id. In this
+							example,&nbsp;it is&nbsp;<code>com&nbsp;-&gt;&nbsp;inthecheesefactory -&gt; thecheeselibrary -&gt; fb-like -&gt; 0.9.3</code></p>
+						<p>Congratulations ! That's all. Although it requires quite a lot of steps but steps are&nbsp;quite straightforward. And
+							most of them are one-time action. Once things are set, you almost have to do any additional step&nbsp;after that.</p>
+						<p>Such a long article but hope that you find it useful. My English might be a little bit weird right now.&nbsp;But at
+							least, I expect that contents&nbsp;are&nbsp;apprehensible.</p>
+						<p>Wish to see your great library up there ! Cheers. =)</p>
+						<table class="table" style="width: 100%; background-color: #f4f4f4; border-radius: 6px;">
+							<tbody>
+								<tr>
+									<td style="border: 0px; width: 64px; padding: 16px 0px 16px 16px;"><img src="./How to distribute your own Android library through jCenter and Maven Central from Android Studio __ The Cheese Factory_files/profile_pic_nuuneoi2.png"
+											width="48/"></td>
+									<td style="border: 0px; padding: 16px;" class="small">
+										Author: <strong>nuuneoi</strong> (Android GDE, CTO &amp; CEO at The Cheese Factory)<br>
+										<div class="text-muted small">A full-stack developer with more than 6 years experience on Android Application Development and more than 12 years
+											in Mobile Application Development industry. Also has skill in Infrastucture, Service Side, Design, UI&amp;UX,
+											Hardware, Optimization, Cooking, Photographing, Blogging, Training, Public Speaking and do love to share things
+											to people in the world!</div>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+						<div class="clearfix"></div>
+					</div>
+				</div>
+			</div>
+		</article>
+	</div>
+</body>
+
+</html>
